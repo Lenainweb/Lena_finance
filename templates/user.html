@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    User
+{% endblock %}
+
+{% block main %}
+{% block change_passw %}
+    <form action="{{ url_for('change_passw') }}" method="get"  >
+        <fieldset>
+            <div class="form-group">
+                <button class="btn btn-default" type="submit" name="change_passw">Change password</button>
+            </div>
+        </fieldset>
+    </form>
+    {% endblock %}
+    {% block contribute %}
+    <form action="{{ url_for('contribute') }}" method="get" >
+        <fieldset>
+            <div class="form-group">
+                <button class="btn btn-default" type="submit" name="contribute">Contribute</button>
+            </div>
+        </fieldset>
+    </form>
+    {% endblock %}
+{% endblock %}

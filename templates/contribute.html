@@ -1,0 +1,16 @@
+{% extends "user.html" %}
+
+
+{% block contribute %}
+    <div class="well well-sm">Enter the required amount * without investing real money ...
+        <p>*(making any amount on your virtual account, you agree to sell us your soul).</p></div>
+    <form action="{{ url_for('contribute') }}" method="post">
+        <fieldset>
+            <div class="form-group">
+                <input autocomplete="off" autofocus class="form-control" name="required_amount" placeholder="Required amount" type="text"/>
+            </div>
+                <button class="btn btn-default" type="submit">Сonfirm</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

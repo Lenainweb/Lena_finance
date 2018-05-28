@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+    <div class="well well-sm">At the moment your assets are:</div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="4"></td>
+                <td>{{summa}}</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            {% for portfolio in portfolios %}
+                <tr>
+                    <td>{{portfolio["symbol"]}}</td>
+                    <td>{{portfolio["name"]}}</td>
+                    <td>{{portfolio["SUM(shares)"]}}</td>
+                    <td>{{portfolio["ROUND(price, 2)"]}}</td>
+                    <td>${{"{0:.2f}".format(portfolio["SUM(shares)"] * portfolio["ROUND(price, 2)"])}}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="4">CASH</td>
+                <td>{{cash}}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

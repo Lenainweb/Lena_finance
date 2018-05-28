@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+    <div class="well well-sm">If you want to buy or sell shares, select the desired item in the menu.</div>
+    <p>
+        A share of {{name}}({{symbol}}) costs {{price}}.
+    </p>
+{% endblock %}
