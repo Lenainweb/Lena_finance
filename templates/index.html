@@ -27,9 +27,9 @@
                 <tr>
                     <td>{{portfolio["symbol"]}}</td>
                     <td>{{portfolio["name"]}}</td>
-                    <td>{{portfolio["SUM(shares)"]}}</td>
-                    <td>{{portfolio["ROUND(price, 2)"]}}</td>
-                    <td>${{"{0:.2f}".format(portfolio["SUM(shares)"] * portfolio["ROUND(price, 2)"])}}</td>
+                    <td>{{portfolio["shares"]}}</td>
+                    <td>{{portfolio["price"]}}</td>
+                    <!-- <td>${{"{0:.2f}".format(portfolio["SUM(shares)"] * portfolio["ROUND(price, 2)"])}}</td> -->
                 </tr>
             {% endfor %}
             <tr>

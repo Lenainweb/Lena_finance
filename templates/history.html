@@ -18,11 +18,12 @@
         </thead>
         <tbody>
             {% for portfolio in portfolios %}
+            <!-- {{portfolio}} -->
                 <tr>
                     <td>{{portfolio["symbol"]}}</td>
                     <td>{{portfolio["name"]}}</td>
                     <td>{{portfolio["shares"]}}</td>
-                    <td>{{portfolio["ROUND(price, 2)"]}}</td>
+                    <td>{{portfolio["price"]}}</td>
                     <td>{{portfolio["transacted"]}}</td>
                 </tr>
             {% endfor %}

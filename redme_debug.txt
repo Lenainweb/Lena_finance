@@ -1,0 +1,2 @@
+export FLASK_ENV=development (В Windows вам нужно использовать setвместо export.)
+FLASK_DEBUG=1.

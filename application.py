@@ -4,11 +4,14 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from flask_session import Session
 from passlib.apps import custom_app_context as pwd_context
 from tempfile import mkdtemp
+import datetime
 
 from helpers import *
 
 # configure application
 app = Flask(__name__)
+
+
 
 # ensure responses aren't cached
 if app.config["DEBUG"]:
@@ -32,6 +35,7 @@ Session(app)
 # db = SQL("sqlite:///finance.db")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///finance.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=True
 db = SQLAlchemy(app)
 
 # create datebase
@@ -43,6 +47,12 @@ class Users(db.Model):
     cash = db.Column(db.Integer, default=10000, nullable=False)
     # users = db.relationship('Users', backref='portfolio', lazy='dynamic')
 
+    def __repr__(self):
+        return '<Users %r %r %r %r>' % (self.id,
+                                        self.username,
+                                        self.hash,
+                                        self.cash)  
+
 
 class Portfolio(db.Model):
     __tablename__ = 'portfolio'
@@ -52,6 +62,16 @@ class Portfolio(db.Model):
     name = db.Column(db.String(512))
     shares = db.Column(db.Integer)
     price = db.Column(db.Float, nullable=False)
+    transacted = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return '<Portfolio %r %r %r %r %r %r %r >' % (self.id, 
+                                                        self.user_id, 
+                                                        self.symbol,
+                                                        self.name,
+                                                        self.shares,
+                                                        self.price,
+                                                        self.transacted)
 
 db.create_all()
 
@@ -63,6 +83,14 @@ def index():
     # Requests to the database of the user's assets.
     # portfolios = db.execute("SELECT symbol, name, SUM(shares), ROUND(price, 2) FROM portfolio WHERE user_id = :userid GROUP BY symbol HAVING SUM(shares) > 0",
     #     userid = session["user_id"])
+    portfolios = Portfolio.query.filter_by(user_id=session["user_id"])
+    
+    
+    # cash = Users.query.filter_by(id=session["user_id"])
+
+
+    # print(cash_of["cash"])
+    # cash = cash_of["cash"]
     # cash = db.execute("SELECT cash FROM users WHERE id = :userid", userid = session["user_id"])
 
     # portfolios_all = Portfolio.query.filter_by(user_id=session["user_id"]).first()
@@ -73,12 +101,12 @@ def index():
     #     summa += portfolio["SUM(shares)"] * portfolio["ROUND(price, 2)"]
     # summa += cash[0]["cash"]
 
-    # # Visualization of the user's portfolio.
-    # return render_template("index.html",
-    #                         portfolios = portfolios,
-    #                         cash = usd(cash[0]["cash"]),
-    #                         summa = usd(summa))
-    return render_template("index1.html")
+    # Visualization of the user's portfolio.
+    return render_template("index.html",
+                            portfolios = portfolios,
+                            cash = 1, #usd(cash[0]["cash"]),
+                            summa = 2) #usd(summa))
+    # return render_template("index1.html")
 
 #############################################
 @app.route("/buy", methods=["GET", "POST"])
@@ -117,7 +145,8 @@ def buy():
                                 symbol=quote["symbol"],
                                 name=quote["name"],
                                 shares=request.form.get("shares"),
-                                price=quote["price"])
+                                price=quote["price"],
+                                transacted=datetime.datetime.now())
 
         db.session.add(result_buy)
         db.session.commit()
@@ -130,17 +159,23 @@ def buy():
     else:
         return render_template("buy.html")
 ##############################################
-# @app.route("/history")
-# @login_required
-# def history():
-#     """Show history of transactions."""
+@app.route("/history")
+@login_required
+def history():
+    """Show history of transactions."""
+    # user_cash = Users.query.filter_by(id=session["user_id"]).first()
 
 #     # Requests to the database of the user's assets.
 #     portfolios = db.execute("SELECT symbol, name, shares, ROUND(price, 2), transacted FROM portfolio WHERE user_id = :userid",
 #         userid = session["user_id"])
 
-#     # Visualization of the user's history.
-#     return render_template("history.html", portfolios = portfolios)
+    portfolios = Portfolio.query.filter_by(user_id=session["user_id"])
+    # for portfolio in portfolios:
+    #     print(portfolio["symbol"], portfolio["name"], portfolio["shares"], portfolio["price"], 
+    #         portfolio["transacted"])
+
+    # Visualization of the user's history.
+    return render_template("history.html", portfolios = portfolios)
 ###############################################
 @app.route("/login", methods=["GET", "POST"])
 def login():
